@@ -1,11 +1,10 @@
 from gpiozero import LED
 from random import randint
 
-
-def binkblink(blinktime, GPIO_PINS=[4, 17, 27, 22]):
+GPIO_PINS=[4, 10, 27, 22]
+leds = [LED(GPIO_PINS[0]), LED(GPIO_PINS[1]), LED(GPIO_PINS[2]), LED(GPIO_PINS[3])]
+def blinkblink(blinktime):
     '''
     blinktime in seconds
     '''
-    ledid = randint(0, 4)
-    light = LED(ledid)
-    light.blink(on_time=blinktime, n=1)
+    leds[randint(0,3)].blink(on_time=blinktime, n=1)

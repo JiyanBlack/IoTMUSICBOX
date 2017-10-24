@@ -1,4 +1,4 @@
-import msvcrt  # temporary library, used for kbhit
+
 import pygame
 import json
 import os
@@ -6,12 +6,13 @@ from os import listdir
 from time import sleep  # used for tempo of songs
 import threading
 from threading import Thread
-from randomflash import binkblink
+from randomflash import blinkblink
 
 # https://beatproduction.net/piano-sound-kit/
 
 listofsounds = []
-
+pathbase = "/home/pi/Desktop/IoTMUSICBOX"
+soundstr = ""
 
 class _GetchWindows:
     def __init__(self):
@@ -119,10 +120,10 @@ def ode_to_joy():
 def win_player():
     pygame.mixer.init()
     getchar = _GetchWindows()
+    global soundstr
     while True:
-        print("Which sound effect would you like to choose? Input q to quit.")
-        soundfile = input("Sound effects you could choose includes: " +
-                          " ".join(listofsounds) + "\n")
+        print("Which sound effect would you like to choose?" , soundstr, "\nInput q to quit.")
+        soundfile = input("Choose a sound file:")
         if soundfile == 'q':
             break
         if soundfile == 'piano':
@@ -142,8 +143,10 @@ def win_player():
                             break
                         elif ch in sounds:
                             print(sounds[ch])
-                            sounda = pygame.mixer.Sound(file=sounds[ch])
-                            binkblink(0.2)
+                            filepath = os.path.join(pathbase, sounds[ch])
+                            print(filepath)
+                            sounda = pygame.mixer.Sound(file=filepath)
+                            blinkblink(0.2)
                             sounda.play()
                         else:
                             continue
@@ -154,10 +157,10 @@ def win_player():
 def linux_player():
     pygame.init()
     pygame.mixer.init()
+    global soundstr
     while True:
-        print("Which sound effect would you like to choose? Input q to quit.")
-        soundfile = input("Sound effects you could choose includes: " +
-                          " ".join(listofsounds) + "\n")
+        print("Which sound effect would you like to choose?" , soundstr, "\nInput q to quit.")
+        soundfile = input("Choose a sound file:")
         if soundfile == 'q':
             break
         soundfile = soundfile + '.json'
@@ -165,8 +168,6 @@ def linux_player():
             with open(soundfile, 'r') as f:
                 sounds = json.load(f)
                 print("Press 'q' to quit")
-                if soundfile == 'piano.json':
-                    pianomode()
                 while True:
                     ch = getchar()
                     if ch == 'q':  # break when q is hit
@@ -174,21 +175,24 @@ def linux_player():
                         break
                     elif ch in sounds:
                         print(sounds[ch])
-                        sounda = pygame.mixer.Sound(file=sounds[ch])
-                        binkblink(0.2)
+                        filepath = os.path.join(pathbase, sounds[ch])
+                        print(filepath)
+                        sounda = pygame.mixer.Sound(file=filepath)
+                        blinkblink(0.2)
                         sounda.play()
                     else:
                         print(ch)
                         continue
         except Exception as e:
-            print('No such music file!')
+            print(e)
 
 
 def main():
     # filter out all json files
-    global listofsounds
+    global listofsounds, soundstr
     jsonfiles = filter(lambda x: x[-5:] == '.json', listdir('./'))
-    listofsounds = map(lambda x: x.strip('.json'), jsonfiles)
+    listofsounds = map(lambda x: x[:-5], jsonfiles)
+    soundstr = ", ".join(listofsounds) + "\n"
     if os.name == 'nt':
         win_player()
     else:

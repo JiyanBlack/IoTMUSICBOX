@@ -1,9 +1,9 @@
 {
-    "a": "./sounds/punk/bell.wav",
-    "b": "./sounds/punk/crow.wav",
-    "c": "./sounds/punk/suction.wav",
-    "d": "./sounds/punk/mower.wav",
-    "e": "./sounds/punk/oogahhorn.wav",
-    "f": "./sounds/punk/woodsaw.wav",
-    "g": "./sounds/punk/meow.wav"
+    "a": "sounds/punk/bell.wav",
+    "s": "sounds/punk/crow.wav",
+    "d": "sounds/punk/suction.wav",
+    "f": "sounds/punk/mower.wav",
+    "g": "sounds/punk/oogahhorn.wav",
+    "h": "sounds/punk/woodsaw.wav",
+    "j": "sounds/punk/meow.wav"
 }
