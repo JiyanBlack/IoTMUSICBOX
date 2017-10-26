@@ -35,7 +35,7 @@ def getchar():
     return ch
 
 
-def pianomode():
+def pianomode_win():
     while True:
         print("Press 'q' to quit")
         pianopieces = {'twinkle':twinkle, 'ode_to_joy':ode_to_joy}
@@ -45,7 +45,7 @@ def pianomode():
 
         if piece in pianopieces:            
             p1 = multiprocessing.Process(target = pianopieces[piece], args=())
-            p2 = multiprocessing.Process(target = pianoplay, args=())
+            p2 = multiprocessing.Process(target = pianoplay_win, args=())
             p1.start()
             p2.start()
             p1.join()
@@ -59,7 +59,7 @@ def pianomode():
         else:
             print("No such song")
 
-def pianoplay():
+def pianoplay_win():
     pygame.mixer.init()
     getchar = _GetchWindows()
     with open("piano.json", 'r') as f:
@@ -79,9 +79,56 @@ def pianoplay():
                 else:
                     continue
 
+def pianomode_linux():
+    while True:
+        print("Press 'q' to quit")
+        pianopieces = {'twinkle':twinkle, 'ode_to_joy':ode_to_joy}
+        print("Which sound effect would you like to choose? Input q to quit.")
+        piece = input("Piano pieces you can choose are " + " ".join(pianopieces) +
+                      " \n")
+
+        if piece in pianopieces:            
+            p1 = multiprocessing.Process(target = pianopieces[piece], args=())
+            p2 = multiprocessing.Process(target = pianoplay_linux, args=())
+            p1.start()
+            p2.start()
+            p1.join()
+            p2.join()
+            print("Piece completed")
+            p1.terminate()
+            p2.terminate()
+        elif piece == 'q':
+            print("Leaving piano mode")
+            break
+        else:
+            print("No such song")    
+
+def pianoplay_linux():
+    pygame.init()
+    pygame.mixer.init()    
+    with open("piano.json", 'r') as f:
+        sounds = json.load(f)
+        print("Press 'q' to quit")
+        while True:
+            ch = getchar()
+            if ch == 'q': 
+                print("Exiting")
+                break
+            elif ch in sounds:
+                print(sounds[ch])
+                filepath = os.path.join(pathbase, sounds[ch])
+                print(filepath)
+                sounda = pygame.mixer.Sound(file=filepath)
+                #blinkblink(0.2)
+                sounda.play()
+            else:
+                print(ch)
+                continue
+
+
 
 def twinkle():
-    speed = 0.05  # tempo of the piece, lower numbers are faster
+    speed = 0.5  # tempo of the piece, lower numbers are faster
     twinklesong = [['C', 1], ['C', 1], ['G', 1], ['G', 1], ['A', 1], ['A', 1],
                    ['G', 2], ['F', 1], ['F', 1], ['E', 1], ['E', 1], ['D', 1],
                    ['D',
@@ -100,7 +147,7 @@ def twinkle():
     return
 
 def ode_to_joy():
-    speed = 0.04  # tempo of the piece, lower numbers are faster
+    speed = 0.4  # tempo of the piece, lower numbers are faster
     odesong = [['e', 1], ['e', 1], ['f', 1], ['g', 1], ['g', 1], ['f', 1], [
         'e', 1
     ], ['d', 1], ['c', 1], ['c', 1], ['d', 1], ['e', 1], ['e', 1.5], [
@@ -135,7 +182,7 @@ def win_player():
         if soundfile == 'q':
             break
         if soundfile == 'piano':
-            pianomode()
+            pianomode_win()
         soundfile = soundfile + '.json'
         try:
             with open(soundfile, 'r') as f:
