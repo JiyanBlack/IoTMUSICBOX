@@ -6,7 +6,7 @@ import msvcrt
    
 
 def ode_to_joy():
-    speed = 0.4  # tempo of the piece, lower numbers are faster
+    speed = 0.04  # tempo of the piece, lower numbers are faster
     odesong = [['e', 1], ['e', 1], ['f', 1], ['g', 1], ['g', 1], ['f', 1], [
         'e', 1
     ], ['d', 1], ['c', 1], ['c', 1], ['d', 1], ['e', 1], ['e', 1.5], [
@@ -98,20 +98,21 @@ def kb():
 
 if __name__ == "__main__":
     # creating processes
-    #pygame.init()
-    #pygame.mixer.init()
-    p1 = multiprocessing.Process(target = ode_to_joy, args =())
-    p2 = multiprocessing.Process(target = kb, args =())
- 
-    # starting process 1
-    p1.start()
-    # starting process 2
-    p2.start()
- 
-    # wait until process 1 is finished
-    p1.join()
-    # wait until process 2 is finished
-    p2.join()
- 
-    # both processes finished
-    print("Done !")
+    while True:
+        p1 = multiprocessing.Process(target = ode_to_joy, args =())
+        p2 = multiprocessing.Process(target = kb, args =())
+     
+        # starting process 1
+        p1.start()
+        # starting process 2
+        p2.start()
+     
+        # wait until process 1 is finished
+        p1.join()
+        # wait until process 2 is finished
+        p2.join()
+     
+        # both processes finished
+        print("Done !")
+        p1.terminate()
+        p2.terminate()

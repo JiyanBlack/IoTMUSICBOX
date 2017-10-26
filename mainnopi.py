@@ -5,7 +5,8 @@ import os
 from os import listdir
 from time import sleep  # used for tempo of songs
 import multiprocessing
-from randomflash import blinkblink
+import msvcrt
+#from randomflash import blinkblink
 
 # https://beatproduction.net/piano-sound-kit/
 
@@ -20,7 +21,6 @@ class _GetchWindows:
     def __call__(self):
         import msvcrt
         return msvcrt.getch()
-
 
 def getchar():
     # Returns a single character from standard input
@@ -38,38 +38,30 @@ def getchar():
 def pianomode():
     while True:
         print("Press 'q' to quit")
-        pianopieces = ['twinkle', 'ode_to_joy']
+        pianopieces = {'twinkle':twinkle, 'ode_to_joy':ode_to_joy}
         print("Which sound effect would you like to choose? Input q to quit.")
         piece = input("Piano pieces you can choose are " + " ".join(pianopieces) +
                       " \n")
-        # There are risks in allowing people to call a function by name from input
-        # so this is doing it the long way.
-        if piece in pianopieces:
-            p1 = multiprocessing.Process(target = piece, args=())
+
+        if piece in pianopieces:            
+            p1 = multiprocessing.Process(target = pianopieces[piece], args=())
             p2 = multiprocessing.Process(target = pianoplay, args=())
             p1.start()
             p2.start()
-            
+            p1.join()
+            p2.join()
+            print("Piece completed")
+            p1.terminate()
+            p2.terminate()
         elif piece == 'q':
             print("Leaving piano mode")
             break
         else:
             print("No such song")
-        '''
-        if piece == 'twinkle':
-            Thread(target=twinkle).start()
-            Thread(target=pianoplay).start()
-            p1 = multiprocessing.Process(target= twinkle, args=())
-        elif piece == 'ode_to_joy':
-            ode_to_joy()
-        elif piece == 'q':
-            return
-        else:
-            print("No such song")
-       '''
-
 
 def pianoplay():
+    pygame.mixer.init()
+    getchar = _GetchWindows()
     with open("piano.json", 'r') as f:
         sounds = json.load(f)
         print("Press 'q' to quit")
@@ -89,7 +81,7 @@ def pianoplay():
 
 
 def twinkle():
-    speed = 0.5  # tempo of the piece, lower numbers are faster
+    speed = 0.05  # tempo of the piece, lower numbers are faster
     twinklesong = [['C', 1], ['C', 1], ['G', 1], ['G', 1], ['A', 1], ['A', 1],
                    ['G', 2], ['F', 1], ['F', 1], ['E', 1], ['E', 1], ['D', 1],
                    ['D',
@@ -104,10 +96,11 @@ def twinkle():
     for note, duration in twinklesong:
         print(note + '\n', end="")
         sleep(duration * speed)
+    print("Press q to quit")
     return
 
 def ode_to_joy():
-    speed = 0.4  # tempo of the piece, lower numbers are faster
+    speed = 0.04  # tempo of the piece, lower numbers are faster
     odesong = [['e', 1], ['e', 1], ['f', 1], ['g', 1], ['g', 1], ['f', 1], [
         'e', 1
     ], ['d', 1], ['c', 1], ['c', 1], ['d', 1], ['e', 1], ['e', 1.5], [
@@ -126,8 +119,9 @@ def ode_to_joy():
     ], ['c', 1], ['d', 1], ['e', 1], ['d', 1.5], ['c',
                                                   0.5], ['c', 2]]
     for note, duration in odesong:
-        print(note + '\t', end="")
+        print(note + '\n', end="")
         sleep(duration * speed)
+    print("Press q to quit")
     return
 
 
@@ -160,7 +154,7 @@ def win_player():
                             filepath = os.path.join(pathbase, sounds[ch])
                             print(filepath)
                             sounda = pygame.mixer.Sound(file=filepath)
-                            blinkblink(0.2)
+                            #blinkblink(0.2)
                             sounda.play()
                         else:
                             continue
@@ -192,7 +186,7 @@ def linux_player():
                         filepath = os.path.join(pathbase, sounds[ch])
                         print(filepath)
                         sounda = pygame.mixer.Sound(file=filepath)
-                        blinkblink(0.2)
+                        #blinkblink(0.2)
                         sounda.play()
                     else:
                         print(ch)
