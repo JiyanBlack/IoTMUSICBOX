@@ -105,7 +105,6 @@ def pianomode_linux():
             print("No such song")    
 
 def pianoplay_linux():
-    pygame.init()
     pygame.mixer.init()    
     with open("piano.json", 'r') as f:
         sounds = json.load(f)
@@ -211,7 +210,6 @@ def win_player():
 
 
 def linux_player():
-    pygame.init()
     pygame.mixer.init()
     global soundstr
     while True:
@@ -219,6 +217,11 @@ def linux_player():
         soundfile = input("Choose a sound file:")
         if soundfile == 'q':
             break
+        if soundfile == 'piano':
+            is_learn = input("Do you want to learn to play a song? Yes or No.\n")
+            if is_learn.lower() == "yes":
+                pianomode_linux()
+                continue
         soundfile = soundfile + '.json'
         try:
             with open(soundfile, 'r') as f:
