@@ -76,6 +76,7 @@ def pianoplay_win():
                 elif ch in sounds:
                     sounda = pygame.mixer.Sound(file=sounds[ch])
                     sounda.play()
+                    blinkblink(0.2)
                 else:
                     continue
 
