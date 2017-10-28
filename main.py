@@ -5,7 +5,7 @@ import os
 from os import listdir
 from time import sleep  # used for tempo of songs
 import multiprocessing
-import msvcrt
+#import msvcrt
 from randomflash import blinkblink
 
 # https://beatproduction.net/piano-sound-kit/
